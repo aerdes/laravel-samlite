@@ -7,7 +7,6 @@ use Illuminate\Console\ConfirmableTrait;
 
 class SamlSetupCommand extends Command
 {
-
     use ConfirmableTrait;
 
     /**
@@ -31,9 +30,9 @@ class SamlSetupCommand extends Command
      */
     public function handle()
     {
-        list($privkey_string, $x509_string) = $this->generateKeyAndCert();
+        [$privkey_string, $x509_string] = $this->generateKeyAndCert();
 
-        if (!$this->updateEnvironmentFile($privkey_string, $x509_string)) {
+        if (! $this->updateEnvironmentFile($privkey_string, $x509_string)) {
             return;
         }
 
@@ -65,11 +64,11 @@ class SamlSetupCommand extends Command
         ));
 
         // Otherwise add entries
-        if (!strpos(file_get_contents($this->laravel->environmentFilePath()),'SAML_SP_PRIVATE_KEY')) {
+        if (! strpos(file_get_contents($this->laravel->environmentFilePath()), 'SAML_SP_PRIVATE_KEY')) {
             file_put_contents($this->laravel->environmentFilePath(),
                 file_get_contents($this->laravel->environmentFilePath())."\nSAML_SP_PRIVATE_KEY=".$privkey_string);
         }
-        if (!strpos(file_get_contents($this->laravel->environmentFilePath()),'SAML_SP_CERT')) {
+        if (! strpos(file_get_contents($this->laravel->environmentFilePath()), 'SAML_SP_CERT')) {
             file_put_contents($this->laravel->environmentFilePath(),
                 file_get_contents($this->laravel->environmentFilePath())."\nSAML_SP_CERT=".$x509_string);
         }
@@ -80,29 +79,31 @@ class SamlSetupCommand extends Command
     protected function generateKeyAndCert()
     {
         $privkey = openssl_pkey_new();
-        $dn = array(
-            "organizationName" => config('app.name'),
-            "commonName" => config('app.url'),
-        );
-        $csr = openssl_csr_new($dn, $privkey, array('digest_alg' => 'sha256'));
-        $x509 = openssl_csr_sign($csr, null, $privkey, $days=3650, array('digest_alg' => 'sha256'));
+        $dn = [
+            'organizationName' => config('app.name'),
+            'commonName' => config('app.url'),
+        ];
+        $csr = openssl_csr_new($dn, $privkey, ['digest_alg' => 'sha256']);
+        $x509 = openssl_csr_sign($csr, null, $privkey, $days = 3650, ['digest_alg' => 'sha256']);
         openssl_pkey_export($privkey, $privkey_string);
         openssl_x509_export($x509, $x509_string);
-        $privkey_string = str_replace(array("\n", "\r", "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----" ), '', $privkey_string);
-        $x509_string = str_replace(array("\n", "\r", "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----" ), '', $x509_string);
+        $privkey_string = str_replace(["\n", "\r", '-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'], '', $privkey_string);
+        $x509_string = str_replace(["\n", "\r", '-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----'], '', $x509_string);
+
         return [$privkey_string, $x509_string];
     }
 
     protected function keyReplacementPattern()
     {
         $escaped = preg_quote('='.config('saml.sp.privateKey'), '/');
+
         return "/^SAML_SP_PRIVATE_KEY{$escaped}/m";
     }
 
     protected function certReplacementPattern()
     {
         $escaped = preg_quote('='.config('saml.sp.x509cert'), '/');
+
         return "/^SAML_SP_CERT{$escaped}/m";
     }
-
 }

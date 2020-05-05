@@ -7,23 +7,22 @@ use OneLogin\Saml2\Auth as OneLogin_Saml2_Auth;
 
 class SamlAuth extends OneLogin_Saml2_Auth
 {
-
     public $idp, $config;
 
-    function __construct(string $idp)
+    public function __construct(string $idp)
     {
         // Check if IDP is defined
         if (empty($idp)) {
             throw new InvalidArgumentException('The IDP name is required.');
         }
         // Check if IDP is setup in the config
-        if(!array_key_exists($idp, config('saml.idps'))) {
+        if (! array_key_exists($idp, config('saml.idps'))) {
             throw new InvalidArgumentException(
-                sprintf("The IDP %s is not defined in the configuration.", $idp)
+                sprintf('The IDP %s is not defined in the configuration.', $idp)
             );
         }
         // Check that IDP test is not used in production
-        if($idp=='test' && config('app.environment')=='production') {
+        if ($idp == 'test' && config('app.environment') == 'production') {
             throw new InvalidArgumentException('The IDP test should not be used in a production environment.');
         }
 
@@ -40,26 +39,29 @@ class SamlAuth extends OneLogin_Saml2_Auth
 
     public static function loadConfig()
     {
-        $config_example = include(__DIR__ . '/../config/onelogin_example.php');
-        $config_advanced_example = include(__DIR__ . '/../config/onelogin_advanced_example.php');
+        $config_example = include __DIR__.'/../config/onelogin_example.php';
+        $config_advanced_example = include __DIR__.'/../config/onelogin_advanced_example.php';
+
         return array_merge($config_example, $config_advanced_example);
     }
 
-    public static function seedConfig($config, $idp) {
+    public static function seedConfig($config, $idp)
+    {
         $config['debug'] = config('app.debug');
         $config['sp']['entityId'] = route('saml.metadata', $idp);
         $config['sp']['assertionConsumerService']['url'] = route('saml.acs', $idp);
         $config['sp']['singleLogoutService']['url'] = route('saml.sls', $idp);
         $config['sp'] = config('saml.sp') + $config['sp'];
-        $config['idp'] = config(sprintf("saml.idps.%s", $idp)) + $config['idp'];
+        $config['idp'] = config(sprintf('saml.idps.%s', $idp)) + $config['idp'];
         $config['contactPerson'] = config('saml.contactPerson') + $config['contactPerson'];
         $config['organization'] = [
             'en-US' => [
                 'name' => config('app.name'),
                 'displayname' => config('app.name'),
-                'url' => config('app.url')
-            ]
+                'url' => config('app.url'),
+            ],
         ];
+
         return $config;
     }
 
@@ -70,5 +72,4 @@ class SamlAuth extends OneLogin_Saml2_Auth
         parent::processResponse($requestId);
         ob_clean();
     }
-
 }

@@ -3,13 +3,12 @@
 namespace Aerdes\LaravelSamlite\Http\Controllers;
 
 use Aerdes\LaravelSamlite\SamlAuth;
-use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use OneLogin\Saml2\Error as OneLogin_Saml2_Error;
 
 class SamlController extends Controller
 {
-
     /**
      * Create a new controller instance.
      */
@@ -19,7 +18,7 @@ class SamlController extends Controller
     }
 
     /**
-     * Generate local SAML metadata
+     * Generate local SAML metadata.
      *
      * @param SamlAuth $saml_auth
      * @return \Illuminate\Http\Response
@@ -31,9 +30,9 @@ class SamlController extends Controller
         $metadata = $settings->getSPMetadata();
         $errors = $settings->validateMetadata($metadata);
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             throw new \InvalidArgumentException(
-                'Invalid SP metadata: ' . implode(', ', $errors),
+                'Invalid SP metadata: '.implode(', ', $errors),
                 OneLogin_Saml2_Error::METADATA_SP_INVALID
             );
         }
@@ -42,7 +41,7 @@ class SamlController extends Controller
     }
 
     /**
-     * Initiate a SAML login request
+     * Initiate a SAML login request.
      *
      * @param SamlAuth $saml_auth
      * @return \Illuminate\Http\RedirectResponse
@@ -51,11 +50,12 @@ class SamlController extends Controller
     public function login(SamlAuth $saml_auth)
     {
         $url = $saml_auth->login(null, [], false, false, true);
+
         return redirect($url);
     }
 
     /**
-     * Process an incoming SAML assertion request
+     * Process an incoming SAML assertion request.
      *
      * @param SamlAuth $saml_auth
      * @return \Illuminate\Http\RedirectResponse
@@ -68,8 +68,8 @@ class SamlController extends Controller
         $saml_auth->processResponse();
 
         // Check if authenticated
-        if (!empty($saml_auth->getErrors()) or !$saml_auth->isAuthenticated()) {
-            abort(403, sprintf("Something went wrong. Go to %s to try again.",
+        if (! empty($saml_auth->getErrors()) or ! $saml_auth->isAuthenticated()) {
+            abort(403, sprintf('Something went wrong. Go to %s to try again.',
                     route('saml.login', $saml_auth->idp)
             ));
         }
@@ -100,11 +100,12 @@ class SamlController extends Controller
         if ($relays_state && $url->full() != $relays_state) {
             return redirect($relays_state);
         }
+
         return redirect()->intended();
     }
 
     /**
-     * Process an incoming SAML logout request (the user logged out of the SSO infrastructure)
+     * Process an incoming SAML logout request (the user logged out of the SSO infrastructure).
      *
      * @param SamlAuth $saml_auth
      * @return \Illuminate\Http\RedirectResponse
@@ -115,8 +116,8 @@ class SamlController extends Controller
         $saml_auth->processSLO();
 
         // Check for errors
-        if (!empty($saml_auth->getErrors())) {
-            abort(403, sprintf("Something went wrong.Go to %s to try again.",
+        if (! empty($saml_auth->getErrors())) {
+            abort(403, sprintf('Something went wrong.Go to %s to try again.',
                 route('saml.sls', $saml_auth->idp)
             ));
         }
@@ -130,7 +131,7 @@ class SamlController extends Controller
     }
 
     /**
-     * Initiate a SAML logout request (log out the user across all the SSO infrastructure)
+     * Initiate a SAML logout request (log out the user across all the SSO infrastructure).
      *
      * @param SamlAuth $saml_auth
      * @param Request $request
@@ -143,7 +144,7 @@ class SamlController extends Controller
         $sessionIndex = $request->query('sessionIndex');
         $nameId = $request->query('nameId');
         $url = $saml_auth->logout($returnTo, [], $nameId, $sessionIndex, true);
+
         return redirect($url);
     }
-
 }

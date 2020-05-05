@@ -13,35 +13,31 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('saml.')
     ->prefix(config('saml.routes_prefix').'/')
-    ->group(function() {
-
-        Route::prefix('{idp}/')->group(function() {
-
-            Route::get('logout', array(
+    ->group(function () {
+        Route::prefix('{idp}/')->group(function () {
+            Route::get('logout', [
                 'as' => 'logout',
                 'uses' => config('saml.controller').'@logout',
-            ));
+            ]);
 
-            Route::get('login', array(
+            Route::get('login', [
                 'as' => 'login',
                 'uses' => config('saml.controller').'@login',
-            ));
+            ]);
 
-            Route::get('metadata', array(
+            Route::get('metadata', [
                 'as' => 'metadata',
                 'uses' => config('saml.controller').'@metadata',
-            ));
+            ]);
 
-            Route::post('acs', array(
+            Route::post('acs', [
                 'as' => 'acs',
                 'uses' => config('saml.controller').'@acs',
-            ));
+            ]);
 
-            Route::get('sls', array(
+            Route::get('sls', [
                 'as' => 'sls',
                 'uses' => config('saml.controller').'@sls',
-            ));
-
+            ]);
         });
-
     });

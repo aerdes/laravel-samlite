@@ -35,7 +35,7 @@ return [
         'support' => [
             'givenName' => env('SAML_SUPPORT_NAME', 'Support'),
             'emailAddress' => env('SAML_SUPPORT_MAIL', 'support@example.org'),
-        ]
+        ],
     ],
 
     'sp' => [
