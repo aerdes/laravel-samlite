@@ -3,12 +3,11 @@
 namespace Aerdes\LaravelSamlite\Tests;
 
 use Aerdes\LaravelSamlite\SamlAuth;
-use Orchestra\Testbench\TestCase;
 use Aerdes\LaravelSamlite\SamlServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class SamlAuthTest extends TestCase
 {
-
     protected function getPackageProviders($app)
     {
         return [SamlServiceProvider::class];
@@ -46,5 +45,4 @@ class SamlAuthTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         new SamlAuth('IsThisTestAnOverkill?');
     }
-
 }

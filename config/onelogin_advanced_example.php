@@ -2,19 +2,19 @@
 
 // Taken from https://github.com/onelogin/php-saml/blob/master/advanced_settings_example.php
 
-return $advancedSettings = array (
+return $advancedSettings = [
 
     // Compression settings
     // Handle if the getRequest/getResponse methods will return the Request/Response deflated.
     // But if we provide a $deflate boolean parameter to the getRequest or getResponse
     // method it will have priority over the compression settings.
-    'compress' => array (
+    'compress' => [
         'requests' => true,
-        'responses' => true
-    ),
+        'responses' => true,
+    ],
 
     // Security settings
-    'security' => array (
+    'security' => [
 
         /** signatures and encryptions offered */
 
@@ -45,7 +45,6 @@ return $advancedSettings = array (
                                                )
         */
         'signMetadata' => false,
-
 
         /** signatures and encryptions required **/
 
@@ -117,30 +116,29 @@ return $advancedSettings = array (
         // ADFS URL-Encodes SAML data as lowercase, and the toolkit by default uses
         // uppercase. Turn it True for ADFS compatibility on signature verification
         'lowercaseUrlencoding' => false,
-    ),
+    ],
 
     // Contact information template, it is recommended to supply a technical and support contacts
-    'contactPerson' => array (
-        'technical' => array (
+    'contactPerson' => [
+        'technical' => [
             'givenName' => '',
-            'emailAddress' => ''
-        ),
-        'support' => array (
+            'emailAddress' => '',
+        ],
+        'support' => [
             'givenName' => '',
-            'emailAddress' => ''
-        ),
-    ),
+            'emailAddress' => '',
+        ],
+    ],
 
     // Organization information template, the info in en_US lang is recommended, add more if required
-    'organization' => array (
-        'en-US' => array(
+    'organization' => [
+        'en-US' => [
             'name' => '',
             'displayname' => '',
-            'url' => ''
-        ),
-    ),
-);
-
+            'url' => '',
+        ],
+    ],
+];
 
 /* Interoperable SAML 2.0 Web Browser SSO Profile [saml2int]   http://saml2int.org/profile/current
 
