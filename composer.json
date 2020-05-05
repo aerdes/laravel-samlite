@@ -1,0 +1,63 @@
+{
+    "name": "aerdes/laravel-samlite",
+    "description": "Enable authentication against SAML identity providers for your Laravel application",
+    "keywords": [
+        "authentication",
+        "saml",
+        "saml2",
+        "samlite",
+        "laravel",
+        "onelogin",
+        "sp",
+        "service provider"
+    ],
+    "homepage": "https://github.com/aerdes/laravel-samlite",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Lukas Müller",
+            "email": "lukas@aerdes.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "ext-openssl": "*",
+        "laravel/framework": "^6.0|^7.0",
+        "onelogin/php-saml": "^3.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0",
+        "orchestra/testbench-browser-kit": "^5.0",
+        "phpseclib/phpseclib": "^2.0.27",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aerdes\\LaravelSamlite\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aerdes\\LaravelSamlite\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-create-project-cmd": [
+            "@php artisan saml:setup"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aerdes\\LaravelSamlite\\SamlServiceProvider"
+            ]
+        }
+    }
+}
