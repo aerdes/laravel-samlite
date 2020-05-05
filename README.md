@@ -64,7 +64,7 @@ php artisan vendor:publish --provider="Aerdes\LaravelSamlite\SamlServiceProvider
 
 Feel free to set the appropriate environmental variables (or edit the config file) in order to add your preferred identity providers.
 
-### Testing
+## Testing
 
 You can run all tests via composer as well:
 
@@ -72,7 +72,7 @@ You can run all tests via composer as well:
 composer test
 ```
 
-### Changelog
+## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
@@ -80,7 +80,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-### Security
+## Security
 
 If you discover any security related issues, please email [lukas@aerdes.com](mailto:lukas@aerdes.com) instead of using the issue tracker.
 
