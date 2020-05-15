@@ -14,7 +14,11 @@ class SamlController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware([
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+        ]);
     }
 
     /**
@@ -109,6 +113,7 @@ class SamlController extends Controller
      *
      * @param SamlAuth $saml_auth
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function sls(SamlAuth $saml_auth, Request $request)
     {
@@ -116,10 +121,9 @@ class SamlController extends Controller
         $saml_auth->processSLO();
 
         // Check for errors
-        if (! empty($saml_auth->getErrors())) {
-            abort(403, sprintf('Something went wrong.Go to %s to try again.',
-                route('saml.sls', $saml_auth->idp)
-            ));
+        $errors = $saml_auth->getErrors();
+        if (! empty($errors)) {
+            throw new \Exception('Could not process SLO: '.implode(', ', $errors));
         }
 
         // Clear the session
@@ -140,11 +144,17 @@ class SamlController extends Controller
      */
     public function logout(SamlAuth $saml_auth, Request $request)
     {
+        // Clear the session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Initiate the request
         $returnTo = $request->query('returnTo');
         $sessionIndex = $request->query('sessionIndex');
         $nameId = $request->query('nameId');
         $url = $saml_auth->logout($returnTo, [], $nameId, $sessionIndex, true);
 
+        // Redirect
         return redirect($url);
     }
 }
