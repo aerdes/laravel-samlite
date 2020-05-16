@@ -7,7 +7,7 @@
 
 This package can be used to quickly add authentication against SAML2 identity providers to your Laravel application. This package thus makes your Laravel application a SAML2 service provider.
 
-Please note that this package is based on [onelogin/php-saml](https://packagist.org/packages/onelogin/php-saml). It is similar to [aacotroneo/laravel-saml2](https://packagist.org/packages/aacotroneo/laravel-saml2) but as easy to use as [laravel/socialite](https://packagist.org/packages/laravel/socialite).
+Please note that this package is based on [onelogin/php-saml](https://packagist.org/packages/onelogin/php-saml). It is similar to [aacotroneo/laravel-saml2](https://packagist.org/packages/aacotroneo/laravel-saml2) but as easy to use as [laravel/socialite](https://packagist.org/packages/laravel/socialite). It also tries to resemble the default Laravel authentication under the hood.
 
 
 ## Installation
@@ -20,7 +20,7 @@ composer require aerdes/laravel-samlite
 
 ## Usage
 
-After installting the package make sure to set some environmental variables. For example, when you want to use [Microsoft Azure](https://portal.azure.com) as identity provider, please set up the following environmental variables:
+After installing the package make sure to set some environmental variables. For example, when you want to use [Microsoft Azure](https://portal.azure.com) as identity provider, please set up the following environmental variables:
 
 ```dotenv
 SAML_IDP_AZURE_AD_IDENTIFIER=
@@ -34,7 +34,7 @@ If your environmental file does not yet contain the variables `SAML_SP_PRIVATE_K
 php artisan saml:setup
 ```
 
-You probably want to modify the default [authentication controller](src/Http/Controllers/SamlController.php) that ships with this package. You can do so by creating a new controller that extends the default one:
+You then want to create a Controller that extends the [authentication controller](src/Http/Controllers/SamlController.php) that ships with this package. Here is an example.
 
 ```php
 <?php
@@ -42,16 +42,32 @@ You probably want to modify the default [authentication controller](src/Http/Con
 namespace App\Http\Controllers;
 
 use Aerdes\LaravelSamlite\Http\Controllers\SamlController;
+use Aerdes\LaravelSamlite\SamlAuth;
 
 class AuthenticationController extends SamlController
 {
     
-    public function acs()
+    public function loginUser(SamlAuth $saml_auth)
     {
-        // Add your code here
+        $mail = $saml_auth->getAttribute('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')[0];
+        $name = $saml_auth->getAttribute('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname')[0];
+        $user = User::where('email', $mail)->first();
+        if (!$user) {
+            $user = new User;
+            $user->name = $name;
+            $user->email = $mail;
+            $user->password = md5(rand(1,10000));
+            $user->save();
+        }
+        $this->guard()->loginUsingId($user->id);
     }
 
 }
+```
+
+Finally, register your controller by placing another environmental variable:
+```dotenv
+SAML_CONTROLLER="App\Http\Controllers\AuthenticationController"
 ```
 
 ## Customization
