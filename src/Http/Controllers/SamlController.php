@@ -214,6 +214,5 @@ abstract class SamlController extends Controller
      * @param SamlAuth $saml_auth
      * @return void
      */
-    abstract function loginUser(SamlAuth $saml_auth);
-
+    abstract public function loginUser(SamlAuth $saml_auth);
 }

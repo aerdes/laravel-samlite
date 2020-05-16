@@ -6,7 +6,6 @@ use Aerdes\LaravelSamlite\SamlAuth;
 
 class SamlControllerExample extends SamlController
 {
-
     public function loginUser(SamlAuth $saml_auth)
     {
         // $mail = $saml_auth->getAttribute('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')[0];
@@ -27,5 +26,4 @@ class SamlControllerExample extends SamlController
         // $saml_auth->$getNameId();
         // $saml_auth->getSessionIndex();
     }
-
 }
