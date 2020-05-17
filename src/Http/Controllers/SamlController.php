@@ -174,14 +174,18 @@ abstract class SamlController extends Controller
         if (property_exists($this, 'redirectTo')) {
             return $this->redirectTo;
         }
-        // Then check if RelayState exists in the request
+        // Then check if RelayState/intended exists in the request
         $relays_state = app('request')->input('RelayState');
+        $intended = redirect()->intended()->getTargetUrl();
         $url = app('Illuminate\Contracts\Routing\UrlGenerator');
         if ($relays_state && $url->full() != $relays_state) {
             return $relays_state;
         }
-        // Send to intended url (this is the default)
-        return redirect()->intended()->getTargetUrl();
+        if ($intended && $url->full() != $intended) {
+            return $intended;
+        }
+        // Send to home if nothing else matched
+        return url('/');
     }
 
     /**
