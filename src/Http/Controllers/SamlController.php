@@ -83,7 +83,7 @@ abstract class SamlController extends Controller
 
         $this->loginUser($saml_auth);
 
-        return redirect($this->redirectPath());
+        return redirect($this->redirectPath($saml_auth));
     }
 
     /**
@@ -162,9 +162,10 @@ abstract class SamlController extends Controller
     /**
      * Get the post login redirect path.
      *
+     * @param SamlAuth $saml_auth
      * @return string
      */
-    public function redirectPath()
+    public function redirectPath(SamlAuth $saml_auth)
     {
         // First check if redirectTo method exists in this controller
         if (method_exists($this, 'redirectTo')) {
@@ -177,11 +178,12 @@ abstract class SamlController extends Controller
         // Then check if RelayState/intended exists in the request
         $relays_state = app('request')->input('RelayState');
         $intended = redirect()->intended()->getTargetUrl();
-        $url = app('Illuminate\Contracts\Routing\UrlGenerator');
-        if ($relays_state && $url->full() != $relays_state) {
+        $url_current = app('Illuminate\Contracts\Routing\UrlGenerator');
+        $url_login = route('saml.login', $saml_auth->idp);
+        if ($relays_state && $url_current->full() != $relays_state && $url_login != $relays_state) {
             return $relays_state;
         }
-        if ($intended && $url->full() != $intended) {
+        if ($intended && $url_current->full() != $intended && $url_login != $intended) {
             return $intended;
         }
         // Send to home if nothing else matched
