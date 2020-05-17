@@ -62,9 +62,9 @@ abstract class SamlController extends Controller
      * @return RedirectResponse
      * @throws OneLogin_Saml2_Error
      */
-    public function login(SamlAuth $saml_auth)
+    public function login(SamlAuth $saml_auth, Request $request)
     {
-        $url = $saml_auth->login(null, [], false, false, true);
+        $url = $saml_auth->login($request->session()->get('url.intended'), [], false, false, true);
 
         return redirect($url);
     }
@@ -177,14 +177,10 @@ abstract class SamlController extends Controller
         }
         // Then check if RelayState/intended exists in the request
         $relays_state = app('request')->input('RelayState');
-        $intended = redirect()->intended()->getTargetUrl();
         $url_current = app('Illuminate\Contracts\Routing\UrlGenerator');
         $url_login = route('saml.login', $saml_auth->idp);
         if ($relays_state && $url_current->full() != $relays_state && $url_login != $relays_state) {
             return $relays_state;
-        }
-        if ($intended && $url_current->full() != $intended && $url_login != $intended) {
-            return $intended;
         }
         // Send to home if nothing else matched
         return url('/');
