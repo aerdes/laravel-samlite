@@ -47,7 +47,7 @@ class SamlControllerTest extends TestCase
 
     public function testLogout()
     {
-        $res = $this->call('GET', 'saml/test/logout')->assertStatus(302);
+        $res = $this->call('POST', 'saml/test/logout')->assertStatus(302);
         $parts = explode('?', $res->getTargetUrl());
         $this->assertTrue($parts[0] === 'http://localhost:8000/simplesaml/saml2/idp/SingleLogoutService.php');
         $this->assertTrue(substr($parts[1], 0, 11) === 'SAMLRequest');
