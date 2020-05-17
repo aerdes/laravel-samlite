@@ -15,7 +15,7 @@ Route::name('saml.')
     ->prefix(config('saml.routes_prefix').'/')
     ->group(function () {
         Route::prefix('{idp}/')->group(function () {
-            Route::get('logout', [
+            Route::post('logout', [
                 'as' => 'logout',
                 'uses' => config('saml.controller').'@logout',
             ]);
