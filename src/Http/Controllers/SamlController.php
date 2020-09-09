@@ -19,6 +19,9 @@ use OneLogin\Saml2\ValidationError;
 
 abstract class SamlController extends Controller
 {
+
+    // TODO: Add generic logout route?
+
     /**
      * Create a new controller instance with the appropriate middleware.
      */
