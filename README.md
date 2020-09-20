@@ -1,7 +1,7 @@
 # Enable authentication against SAML identity providers for your Laravel application
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/aerdes/laravel-samlite.svg?style=flat-square)](https://packagist.org/packages/aerdes/laravel-samlite)
-[![Build Status](https://img.shields.io/travis/aerdes/laravel-samlite/master.svg?style=flat-square)](https://travis-ci.org/aerdes/laravel-samlite)
+[![Build Status](https://img.shields.io/travis/aerdes/laravel-samlite/master.svg?style=flat-square)](https://travis-ci.com/github/aerdes/laravel-samlite)
 [![StyleCI](https://github.styleci.io/repos/261439333/shield?branch=master)](https://github.styleci.io/repos/261439333)
 [![Total Downloads](https://img.shields.io/packagist/dt/aerdes/laravel-samlite.svg?style=flat-square)](https://packagist.org/packages/aerdes/laravel-samlite)
 
